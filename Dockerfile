@@ -1,7 +1,7 @@
 FROM php:7.4-cli
 
 RUN apt-get update \
-    && apt-get install -y git mariadb-client zlib1g-dev libpng-dev libzip-dev libmagickwand-dev libjpeg-dev libmcrypt-dev sudo iproute2
+    && apt-get install -y git mariadb-client zlib1g-dev libpng-dev libzip-dev libmagickwand-dev libjpeg-dev libmcrypt-dev sudo iproute2 
     
 
 RUN printf "\n" | pecl install imagick mcrypt
@@ -25,7 +25,11 @@ ARG UID=1000
 ARG GID=1000
 
 RUN useradd -m ${USER} --uid=${UID}
-RUN groupmod -g ${GID} coderz
+RUN groupmod -g ${GID} ${USER}
+RUN usermod -aG sudo ${USER}
+RUN echo "$USER:root" | chpasswd
+
+RUN npm install -g expo-cli 2>&1
 
 USER ${UID}:${GID}
 WORKDIR /home/coderz
